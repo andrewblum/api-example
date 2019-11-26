@@ -22,3 +22,9 @@ def test_student_not_found(client):
 def test_exams(client):
     r = client.get("/exams", follow_redirects=True)
     assert r.get_json() == []
+
+
+def test_exam_not_found(client):
+    r = client.get("/exams/3", follow_redirects=True)
+    assert r.status_code == 404
+    assert r.get_json() == {"error": "404 Not Found: exam does not exist"}

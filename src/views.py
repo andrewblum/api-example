@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from services import lock, students, exams
+from src.services import lock, students, exams
 
 app = Flask(__name__)
 

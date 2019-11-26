@@ -30,7 +30,7 @@ def process_events():
                     add_event(event)
 
 
-def add_event(event):
+def add_event(event, students=students, exams=exams):
     student_id = event["studentId"]
     exam_id = event["exam"]
     score = event["score"]

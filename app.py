@@ -1,6 +1,6 @@
 import threading
-from services import get_events, process_events
-from views import app
+from src.services import get_events, process_events
+from src.views import app
 
 
 if __name__ == "__main__":

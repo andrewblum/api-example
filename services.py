@@ -27,19 +27,26 @@ def process_events():
 
             with lock:
                 for event in new_events:
-                    student_id = event["studentId"]
-                    exam = event["exam"]
-                    score = event["score"]
+                    add_event(event)
 
-                    if student_id not in students:
-                        students[student_id] = {
-                            "results": [{exam: score}],
-                            "average": score,
-                        }
-                    else:
-                        student = students[student_id]
-                        n_scores = len(student["results"])
-                        student["average"] = (student["average"] * n_scores + score) / (
-                            n_scores + 1
-                        )
-                        student["results"].append({exam: score})
+
+def add_event(event):
+    student_id = event["studentId"]
+    exam_id = event["exam"]
+    score = event["score"]
+
+    if student_id not in students:
+        students[student_id] = {"results": [{exam_id: score}], "average": score}
+    else:
+        student = students[student_id]
+        n_scores = len(student["results"])
+        student["average"] = (student["average"] * n_scores + score) / (n_scores + 1)
+        student["results"].append({exam_id: score})
+
+    if exam_id not in exams:
+        exams[exam_id] = {"results": [{student_id: score}], "average": score}
+    else:
+        exam = exams[exam_id]
+        n_scores = len(exam["results"])
+        exam["average"] = (exam["average"] * n_scores + score) / (n_scores + 1)
+        exam["results"].append({student_id: score})

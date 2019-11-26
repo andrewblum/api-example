@@ -5,23 +5,30 @@ import requests
 
 EVENTS_URL = "http://live-test-scores.herokuapp.com/scores"
 
-lock = threading.RLock()
+lock = threading.Lock()
 
-events = deque()  # thread safe for push/pop on either side
+# thread safe for push/pop on either side
+# https://docs.python.org/3/library/collections.html#collections.deque
+events = deque()
 
+
+# These two dictionaries play the role of a datastore.
 students = {}
 exams = {}
+
 
 stream = requests.get(EVENTS_URL, stream=True).iter_lines()
 
 
 def get_events():
+    """Consume events from the events stream and add to deque."""
     for line in stream:
         if line.startswith(b"data:"):
             events.append(json.loads(line.decode()[6:]))
 
 
 def process_events(testing=False):
+    """Processes and clears items from deque and updates students and exams."""
     while True:
         if events:
             new_events = []
@@ -32,11 +39,15 @@ def process_events(testing=False):
                 for event in new_events:
                     add_event(event)
 
-            if testing:
+            if testing:  # need to allow test to finish
                 break
 
 
 def add_event(event):
+    """Takes an event and updates the students and exams dicts.
+    We sacrifice normalization so that each API request causes
+    a read, ie, no additional computation."""
+
     student_id = event["studentId"]
     exam_id = event["exam"]
     score = event["score"]

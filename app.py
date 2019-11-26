@@ -1,25 +1,6 @@
 import threading
-from flask import Flask, jsonify
-from services import students, exams, get_events, process_events
-
-lock = threading.RLock()
-
-app = Flask(__name__)
-
-
-@app.route("/students/")
-def list_students():
-    with lock:
-        resp = jsonify(list(students))
-    return resp
-
-
-@app.route("/students/<student_id>")
-def student_details(student_id):
-    with lock:
-        resp = jsonify(students[student_id])
-
-    return resp
+from services import get_events, process_events
+from views import app
 
 
 if __name__ == "__main__":

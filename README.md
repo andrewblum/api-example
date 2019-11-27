@@ -6,9 +6,10 @@
 2. create a Python3 virtual environment and activate it
 
 `virtualenv -p python3.7 venv`
+
 `source venv/bin/activate`
 
-(This was developed and tested with Python 3.7 on a MacBook Air running Catalina.)
+(This was developed and tested with Python 3.7 on a MacBook Air running OS 10.15 Catalina.)
 
 3. install dependencies
 
@@ -50,6 +51,8 @@ $ curl -L localhost:5000/students
 ```
 
 ## Running the tests
+
+In the top level directory and with the virtualenv active:
 
 `python -m pytest`
 

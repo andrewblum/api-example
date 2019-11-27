@@ -1,3 +1,12 @@
+"""
+Procedures to consume the events and update the data that our API returns.
+
+We use a queue to hold the events in order to separate and simplify the ingestion
+and the processing. For example, since the events come in bursts, we can process
+them in batches.
+
+"""
+
 from collections import deque
 import json
 import threading

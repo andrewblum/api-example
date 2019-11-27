@@ -1,5 +1,7 @@
 # API example
 
+This codebase was developed and tested with Python 3.7 on a MacBook Air running OS 10.15 Catalina.
+
 ## Installation
 
 1. `git clone` this repo and `cd` into the project's top level folder
@@ -9,8 +11,6 @@
    `virtualenv -p python3.7 venv`
 
    `source venv/bin/activate`
-
-   (This was developed and tested with Python 3.7 on a MacBook Air running OS 10.15 Catalina.)
 
 1. install dependencies
 

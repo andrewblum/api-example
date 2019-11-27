@@ -4,6 +4,8 @@ from src.services import add_event, get_events, process_events
 
 
 def test_get_events(mocker):
+    """Fetching of events from stream and populating queue."""
+
     mocker.patch(
         "src.services.stream",
         new=[
@@ -22,6 +24,8 @@ def test_get_events(mocker):
 
 
 def test_process_events(mocker):
+    """Emptying queue and updating students and exams."""
+
     mocker.patch(
         "src.services.events",
         new=deque(
@@ -36,7 +40,9 @@ def test_process_events(mocker):
     )
     students = mocker.patch("src.services.students", new={})
     exams = mocker.patch("src.services.exams", new={})
+
     process_events(testing=True)
+
     assert students == {
         "Susana_Langworth": {
             "average": 0.8310771952183729,
@@ -52,6 +58,8 @@ def test_process_events(mocker):
 
 
 def test_add_event(mocker):
+    """Adding of individual events from queue to exams / students."""
+
     students = mocker.patch("src.services.students", new={})
     exams = mocker.patch("src.services.exams", new={})
 

@@ -3,17 +3,18 @@
 ## Installation
 
 1. `git clone` this repo and `cd` into the project's top level folder
-2. create a Python3 virtual environment and activate it
 
-`virtualenv -p python3.7 venv`
+1. create a Python3 virtual environment and activate it
 
-`source venv/bin/activate`
+   `virtualenv -p python3.7 venv`
 
-(This was developed and tested with Python 3.7 on a MacBook Air running OS 10.15 Catalina.)
+   `source venv/bin/activate`
 
-3. install dependencies
+   (This was developed and tested with Python 3.7 on a MacBook Air running OS 10.15 Catalina.)
 
-`pip install -r requirements.txt`
+1. install dependencies
+
+   `pip install -r requirements.txt`
 
 ## Running locally
 
@@ -22,6 +23,7 @@ In the top level directory and with the virtualenv active:
 `python api.py`
 
 Sample usage:
+
 ```
 $ curl -L localhost:5000/students
 {
@@ -60,7 +62,7 @@ Test coverage data:
 
 `coverage run -m pytest && coverage report`
 
-output:
+Sample output:
 
 ```
 Name              Stmts   Miss  Cover

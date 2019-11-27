@@ -33,7 +33,7 @@ def client():
 
 def test_students(client):
     r = client.get("/students", follow_redirects=True)
-    assert r.get_json() == ["Alice", "Bob"]
+    assert r.get_json() == {"studentIds": ["Alice", "Bob"]}
 
 
 def test_student_detail(client):
@@ -52,7 +52,7 @@ def test_student_not_found(client):
 
 def test_exams(client):
     r = client.get("/exams", follow_redirects=True)
-    assert r.get_json() == [3, 4]
+    assert r.get_json() == {"examIds": [3, 4]}
 
 
 def test_exam_detail(client):

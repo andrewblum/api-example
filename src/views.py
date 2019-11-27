@@ -21,7 +21,7 @@ def resource_not_found(e):
 def list_students():
     """Return list of students."""
     with lock:
-        resp = jsonify(list(students))
+        resp = jsonify(studentIds=list(students))
 
     return resp
 
@@ -42,7 +42,7 @@ def student_details(student_id):
 def list_exams():
     """Returns list of exams."""
     with lock:
-        resp = jsonify(list(exams))
+        resp = jsonify(examIds=list(exams))
 
     return resp
 

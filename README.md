@@ -1,42 +1,69 @@
-## Coding test
+# API example
 
+## Installation
 
-At `http://live-test-scores.herokuapp.com/scores` you'll find a service that follows the [Server-Sent Events](https://www.w3.org/TR/2015/REC-eventsource-20150203/) protocol. You can connect to the service using cURL:
+1. `git clone` this repo and `cd` into the project's top level folder
+2. create a Python3 virtual environment and activate it
 
-        curl http://live-test-scores.herokuapp.com/scores
+`virtualenv -p python3.7 venv`
+`source venv/bin/activate`
 
-Periodically, you'll receive a JSON payload that represents a student's test score (a JavaScript number between 0 and 1), the exam number, and a student ID that uniquely identifies a student. For example:
+(This was developed and tested with Python 3.7 on a MacBook Air running Catalina.)
 
+3. install dependencies
 
-        event: score
-        data: {"exam": 3, "studentId": "foo", score: .991}
+`pip install -r requirements.txt`
 
-This represents that student foo received a score of `.991` on exam #3. 
+## Running locally
 
-Your job is to build an application that consumes this data, processes it, and provides a simple REST API that exposes the processed results. 
+In the top level directory and with the virtualenv active:
 
-You may build this application in any language or stack that you prefer. You may also use any open-source libraries or resources that you find helpful. **As part of the exercise, please replace this README file with instructions for building and running your project.** We will run your code as part of our review process.
+`python api.py`
 
-Here's the REST API we want you to build:
+Sample usage:
+```
+$ curl -L localhost:5000/students
+{
+  "studentIds": [
+    "Mohamed2",
+    "Izaiah_Schroeder",
+    "Morris5",
+    "Julia.Effertz",
+    "Thalia.Gleichner9",
+    "Misael65",
+    "Marion.Zieme51",
+    "Gregg_Grimes64",
+    "Camden_Lynch35",
+    "Gilda.Stokes52",
+    "Elton.Boyer94",
+    "Karolann_Sanford",
+    "Ernie_Macejkovic74",
+    "Zane_Grady77",
+    "Colin_Volkman",
+    "Verlie.Stamm57",
+    "Lawson_Denesik",
+    "Bettie_Herman7",
+    "Erick11",
+    "Ramon.Beier"
+  ]
+}
+```
 
-1. A REST API `/students` that lists all users that have received at least one test score
-2. A REST API `/students/{id}` that lists the test results for the specified student, and provides the student's average score across all exams
-3. A REST API `/exams` that lists all the exams that have been recorded
-4. A REST API `/exams/{number}` that lists all the results for the specified exam, and provides the average score across all students
+## Running the tests
 
-Coding tests are often contrived, and this exercise is no exception. To the best of your ability, make your solution reflect the kind of code you'd want shipped to production. A few things we're specifically looking for:
+`python -m pytest`
 
+Test coverage data:
 
-* Well-structured, well-written, idiomatic, safe, performant code.
-* Tests, reflecting the level of testing you'd expect in a production service.
-* Good RESTful API design. Whatever that means to you, make sure your implementation reflects it, and be able to defend your design.
-* Ecosystem understanding. Your code should demonstrate that you understand whatever ecosystem you're coding against— including project layout and organization, use of third party libraries, and build tools.
+`coverage run -m pytest && coverage report`
 
-That said, we'd like you to cut some corners so we can focus on certain aspects of the problem:
+output:
 
-
-* Store the results in memory instead of a persistent store. In production code, you'd never do this, of course.
-* Since you're storing results in memory, you don't need to worry about the “ops” aspects of deploying your service— load balancing, high availability, deploying to a cloud provider, etc. won't be necessary.
-
-
-That's it. Commit your solution to the provided GitHub repository (this one).  When you come in, we'll pair with you and  walk through your solution and extend it in an interesting way.
+```
+Name              Stmts   Miss  Cover
+-------------------------------------
+src/services.py      41      0   100%
+src/views.py         25      0   100%
+-------------------------------------
+TOTAL                66      0   100%
+```

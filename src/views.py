@@ -21,7 +21,7 @@ def resource_not_found(e):
 @app.route("/students/")
 def list_students():
     """Return list of students."""
-    resp = jsonify(studentIds=list(datastore.get_students()))
+    resp = jsonify(studentIds=datastore.student_ids)
 
     return resp
 
@@ -29,10 +29,11 @@ def list_students():
 @app.route("/students/<student_id>")
 def student_details(student_id):
     """Return scores and average of a student."""
-    if student_id not in datastore.get_students():
+    data = datastore.get_student(student_id)
+    if data is None:
         abort(404, description="student does not exist")
 
-    resp = jsonify(datastore.get_students()[student_id])
+    resp = jsonify(data)
 
     return resp
 
@@ -40,7 +41,7 @@ def student_details(student_id):
 @app.route("/exams/")
 def list_exams():
     """Returns list of exams."""
-    resp = jsonify(examIds=list(datastore.get_exams()))
+    resp = jsonify(examIds=datastore.exam_ids)
 
     return resp
 
@@ -48,9 +49,10 @@ def list_exams():
 @app.route("/exams/<int:exam_id>")
 def exam_details(exam_id):
     """Returns scores and average of an exam."""
-    if exam_id not in datastore.get_exams():
+    data = datastore.get_exam(exam_id)
+    if data is None:
         abort(404, description="exam does not exist")
 
-    resp = jsonify(datastore.get_exams()[exam_id])
+    resp = jsonify(data)
 
     return resp

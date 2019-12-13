@@ -48,13 +48,23 @@ class Datastore:
             exam["average"] = (exam["average"] * n_scores + score) / (n_scores + 1)
             exam["results"].append({"studentId": student_id, "score": score})
 
-    def get_students(self):
+    def get_student(self, student_id):
         with lock:
-            return deepcopy(self.students)
+            return deepcopy(self.students.get(student_id))
 
-    def get_exams(self):
+    def get_exam(self, exam_id):
         with lock:
-            return deepcopy(self.exams)
+            return deepcopy(self.exams.get(exam_id))
+
+    @property
+    def exam_ids(self):
+        with lock:
+            return list(self.exams)
+
+    @property
+    def student_ids(self):
+        with lock:
+            return list(self.students)
 
 
 datastore = Datastore()

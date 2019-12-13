@@ -1,6 +1,7 @@
 import threading
 from collections import deque
-from src.services import add_event, get_events, process_events
+from src.services import get_events, process_events
+from src.datastore import datastore, Datastore
 
 
 def test_get_events(mocker):
@@ -38,18 +39,18 @@ def test_process_events(mocker):
             ]
         ),
     )
-    students = mocker.patch("src.services.students", new={})
-    exams = mocker.patch("src.services.exams", new={})
+
+    datastore = mocker.patch("src.services.datastore", new=Datastore())
 
     process_events(testing=True)
 
-    assert students == {
+    assert datastore.students == {
         "Susana_Langworth": {
             "average": 0.8310771952183729,
             "results": [{"exam": 13857, "score": 0.8310771952183729}],
         }
     }
-    assert exams == {
+    assert datastore.exams == {
         13857: {
             "average": 0.8310771952183729,
             "results": [{"score": 0.8310771952183729, "studentId": "Susana_Langworth"}],
@@ -60,23 +61,22 @@ def test_process_events(mocker):
 def test_add_event(mocker):
     """Adding of individual events from queue to exams / students."""
 
-    students = mocker.patch("src.services.students", new={})
-    exams = mocker.patch("src.services.exams", new={})
+    datastore = mocker.patch("src.services.datastore", new=Datastore())
 
-    add_event({"studentId": "Alice", "exam": 3, "score": 0.9})
+    datastore.add_event({"studentId": "Alice", "exam": 3, "score": 0.9})
 
-    add_event({"studentId": "Bob", "exam": 3, "score": 0.8})
+    datastore.add_event({"studentId": "Bob", "exam": 3, "score": 0.8})
 
-    add_event({"studentId": "Alice", "exam": 4, "score": 0.7})
+    datastore.add_event({"studentId": "Alice", "exam": 4, "score": 0.7})
 
-    assert students == {
+    assert datastore.students == {
         "Alice": {
             "results": [{"exam": 3, "score": 0.9}, {"exam": 4, "score": 0.7}],
             "average": (0.7 + 0.9) / 2,
         },
         "Bob": {"results": [{"exam": 3, "score": 0.8}], "average": 0.8},
     }
-    assert exams == {
+    assert datastore.exams == {
         3: {
             "results": [
                 {"studentId": "Alice", "score": 0.9},
@@ -102,8 +102,7 @@ def test_threads(mocker):
 
     mocker.patch("src.services.events", new=deque())
 
-    students = mocker.patch("src.services.students", new={})
-    exams = mocker.patch("src.services.exams", new={})
+    datastore = mocker.patch("src.services.datastore", new=Datastore())
 
     t_fetch_events = threading.Thread(target=get_events)
     t_process_events = threading.Thread(target=process_events, kwargs={"testing": True})
@@ -114,13 +113,13 @@ def test_threads(mocker):
     t_fetch_events.join()
     t_process_events.join()
 
-    assert students == {
+    assert datastore.students == {
         "Susana_Langworth": {
             "average": 0.8310771952183729,
             "results": [{"exam": 13857, "score": 0.8310771952183729}],
         }
     }
-    assert exams == {
+    assert datastore.exams == {
         13857: {
             "average": 0.8310771952183729,
             "results": [{"score": 0.8310771952183729, "studentId": "Susana_Langworth"}],

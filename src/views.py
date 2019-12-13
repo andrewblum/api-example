@@ -6,7 +6,8 @@ done under a lock, lest the data changes during the read.
 
 
 from flask import Flask, jsonify, abort
-from src.services import lock, students, exams
+
+from src.datastore import datastore
 
 app = Flask(__name__)  # the Flask application object
 
@@ -20,8 +21,7 @@ def resource_not_found(e):
 @app.route("/students/")
 def list_students():
     """Return list of students."""
-    with lock:
-        resp = jsonify(studentIds=list(students))
+    resp = jsonify(studentIds=list(datastore.get_students()))
 
     return resp
 
@@ -29,11 +29,10 @@ def list_students():
 @app.route("/students/<student_id>")
 def student_details(student_id):
     """Return scores and average of a student."""
-    with lock:
-        if student_id not in students:
-            abort(404, description="student does not exist")
+    if student_id not in datastore.get_students():
+        abort(404, description="student does not exist")
 
-        resp = jsonify(students[student_id])
+    resp = jsonify(datastore.get_students()[student_id])
 
     return resp
 
@@ -41,8 +40,7 @@ def student_details(student_id):
 @app.route("/exams/")
 def list_exams():
     """Returns list of exams."""
-    with lock:
-        resp = jsonify(examIds=list(exams))
+    resp = jsonify(examIds=list(datastore.get_exams()))
 
     return resp
 
@@ -50,10 +48,9 @@ def list_exams():
 @app.route("/exams/<int:exam_id>")
 def exam_details(exam_id):
     """Returns scores and average of an exam."""
-    with lock:
-        if exam_id not in exams:
-            abort(404, description="exam does not exist")
+    if exam_id not in datastore.get_exams():
+        abort(404, description="exam does not exist")
 
-        resp = jsonify(exams[exam_id])
+    resp = jsonify(datastore.get_exams()[exam_id])
 
     return resp

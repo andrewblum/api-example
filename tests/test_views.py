@@ -9,7 +9,7 @@ def client():
 
     # set up
 
-    views.students = {
+    views.datastore.students = {
         "Alice": {
             "results": [{"exam": 3, "score": 0.9}, {"exam": 4, "score": 0.7}],
             "average": (0.7 + 0.9) / 2,
@@ -17,7 +17,7 @@ def client():
         "Bob": {"results": [{"exam": 3, "score": 0.8}], "average": 0.8},
     }
 
-    views.exams = {
+    views.datastore.exams = {
         3: {
             "results": [
                 {"studentId": "Alice", "score": 0.9},
@@ -33,8 +33,8 @@ def client():
 
     # tear down
 
-    views.students = {}
-    views.exams = {}
+    views.datastore.students = {}
+    views.datastore.exams = {}
 
 
 def test_students(client):

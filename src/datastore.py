@@ -1,0 +1,60 @@
+import threading
+from copy import deepcopy
+
+
+lock = threading.Lock()
+
+
+class Datastore:
+    def __init__(self):
+        self.students = {}
+        self.exams = {}
+
+    def add_batch(self, events):
+        with lock:
+            for event in events:
+                self.add_event(event)
+
+    def add_event(self, event):
+        """Takes an event and updates the students and exams dicts.
+        We sacrifice normalization so that each API request causes
+        a read, ie, no additional computation."""
+
+        student_id = event["studentId"]
+        exam_id = event["exam"]
+        score = event["score"]
+
+        if student_id not in self.students:
+            self.students[student_id] = {
+                "results": [{"exam": exam_id, "score": score}],
+                "average": score,
+            }
+        else:
+            student = self.students[student_id]
+            n_scores = len(student["results"])
+            student["average"] = (student["average"] * n_scores + score) / (
+                n_scores + 1
+            )
+            student["results"].append({"exam": exam_id, "score": score})
+
+        if exam_id not in self.exams:
+            self.exams[exam_id] = {
+                "results": [{"studentId": student_id, "score": score}],
+                "average": score,
+            }
+        else:
+            exam = self.exams[exam_id]
+            n_scores = len(exam["results"])
+            exam["average"] = (exam["average"] * n_scores + score) / (n_scores + 1)
+            exam["results"].append({"studentId": student_id, "score": score})
+
+    def get_students(self):
+        with lock:
+            return deepcopy(self.students)
+
+    def get_exams(self):
+        with lock:
+            return deepcopy(self.exams)
+
+
+datastore = Datastore()

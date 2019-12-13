@@ -21,10 +21,11 @@ EVENTS_URL = "http://live-test-scores.herokuapp.com/scores"
 events = deque()
 
 
-stream = requests.get(EVENTS_URL, stream=True).iter_lines()
+def get_stream():
+    return requests.get(EVENTS_URL, stream=True).iter_lines()  # pragma: no cover
 
 
-def get_events():
+def get_events(stream):
     """Consume events from the events stream and add to deque."""
     for line in stream:
         if line.startswith(b"data:"):

@@ -68,3 +68,5 @@ class Datastore:
 
 
 datastore = Datastore()
+
+del Datastore

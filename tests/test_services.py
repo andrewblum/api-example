@@ -1,23 +1,23 @@
 import threading
 from collections import deque
 from src.services import get_events, process_events
-from src.datastore import datastore, Datastore
+from src.datastore import datastore
+
+Datastore = type(datastore)
 
 
 def test_get_events(mocker):
     """Fetching of events from stream and populating queue."""
 
-    mocker.patch(
-        "src.services.stream",
-        new=[
+    events = mocker.patch("src.services.events", new=deque())
+
+    get_events(
+        [
             b"",
             b"event: score",
             b'data: {"studentId":"Susana_Langworth","exam":13857,"score":0.8310771952183729}',
-        ],
+        ]
     )
-    events = mocker.patch("src.services.events", new=deque())
-
-    get_events()
 
     assert events == deque(
         [{"studentId": "Susana_Langworth", "exam": 13857, "score": 0.8310771952183729}]
@@ -58,10 +58,10 @@ def test_process_events(mocker):
     }
 
 
-def test_add_event(mocker):
+def test_add_event():
     """Adding of individual events from queue to exams / students."""
 
-    datastore = mocker.patch("src.services.datastore", new=Datastore())
+    datastore = Datastore()
 
     datastore.add_event({"studentId": "Alice", "exam": 3, "score": 0.9})
 
@@ -91,20 +91,20 @@ def test_add_event(mocker):
 def test_threads(mocker):
     """Integration test of the ingestion and processing threads."""
 
-    mocker.patch(
-        "src.services.stream",
-        new=[
-            b"",
-            b"event: score",
-            b'data: {"studentId":"Susana_Langworth","exam":13857,"score":0.8310771952183729}',
-        ],
-    )
-
     mocker.patch("src.services.events", new=deque())
 
     datastore = mocker.patch("src.services.datastore", new=Datastore())
 
-    t_fetch_events = threading.Thread(target=get_events)
+    t_fetch_events = threading.Thread(
+        target=get_events,
+        args=(
+            [
+                b"",
+                b"event: score",
+                b'data: {"studentId":"Susana_Langworth","exam":13857,"score":0.8310771952183729}',
+            ],
+        ),
+    )
     t_process_events = threading.Thread(target=process_events, kwargs={"testing": True})
 
     t_fetch_events.start()

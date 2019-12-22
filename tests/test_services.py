@@ -63,11 +63,11 @@ def test_add_event():
 
     datastore = Datastore()
 
-    datastore.add_event({"studentId": "Alice", "exam": 3, "score": 0.9})
+    datastore._add_event({"studentId": "Alice", "exam": 3, "score": 0.9})
 
-    datastore.add_event({"studentId": "Bob", "exam": 3, "score": 0.8})
+    datastore._add_event({"studentId": "Bob", "exam": 3, "score": 0.8})
 
-    datastore.add_event({"studentId": "Alice", "exam": 4, "score": 0.7})
+    datastore._add_event({"studentId": "Alice", "exam": 4, "score": 0.7})
 
     assert datastore.students == {
         "Alice": {

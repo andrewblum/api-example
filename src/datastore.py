@@ -13,12 +13,15 @@ class Datastore:
     def add_batch(self, events):
         with lock:
             for event in events:
-                self.add_event(event)
+                self._add_event(event)
 
-    def add_event(self, event):
+    def _add_event(self, event):
         """Takes an event and updates the students and exams dicts.
         We sacrifice normalization so that each API request causes
-        a read, ie, no additional computation."""
+        a read, ie, no additional computation.
+
+        This method is NOT threadsafe. Do not use directly!
+        """
 
         student_id = event["studentId"]
         exam_id = event["exam"]

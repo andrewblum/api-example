@@ -17,4 +17,4 @@ t_process_events.start()
 
 if __name__ == "__main__":
 
-    app.run(debug=True)  # don't use debug mode in production
+    app.run(host="0.0.0.0")
